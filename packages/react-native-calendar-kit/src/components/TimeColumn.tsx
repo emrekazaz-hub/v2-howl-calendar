@@ -1,13 +1,12 @@
 import type { PropsWithChildren } from 'react';
 import React, { memo } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import Animated, { useAnimatedStyle } from 'react-native-reanimated';
 import type { SharedValue } from 'react-native-reanimated';
 import { EXTRA_HEIGHT, HOUR_SHORT_LINE_WIDTH } from '../constants';
 import { useBody } from '../context/BodyContext';
 import { useTheme } from '../context/ThemeProvider';
 import type { ThemeConfigs } from '../types';
-import Text from './Text';
 
 const selectTimeColumnTheme = (state: ThemeConfigs) => ({
   cellBorderColor: state.colors.border,
@@ -40,10 +39,20 @@ const TimeColumn = () => {
 
   const _renderHour = (hour: { slot: number; time: string }, index: number) => {
     let children: React.ReactNode;
+    const nightHour = ['19:00', '20:00'];
+
+    const isNightHour = nightHour.includes(hour.time);
+
+    const displayTime = isNightHour ? hour.time + ' text' : hour.time;
+
     if (renderHour) {
-      children = renderHour({ hourStr: hour.time, minutes: hour.slot, style });
+      children = renderHour({
+        hourStr: displayTime,
+        minutes: hour.slot,
+        style,
+      });
     } else {
-      children = <Text style={style}>{hour.time}</Text>;
+      children = <Text style={style}>{displayTime}</Text>;
     }
 
     return (
